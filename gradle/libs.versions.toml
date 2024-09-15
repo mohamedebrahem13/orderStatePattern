@@ -19,6 +19,7 @@ hiltNavigationCompose = "1.2.0"
 kotest = "5.5.5"
 
 [libraries]
+byte-buddy = { module = "net.bytebuddy:byte-buddy", version = "1.14.9" } # Replace with the latest compatible version
 kotest-bundle = { module = "io.kotest:kotest-bom", version.ref = "kotest" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest" }
