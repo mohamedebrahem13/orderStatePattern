@@ -75,6 +75,27 @@ class ManageOrderUseCaseTest : StringSpec({
             result shouldBe Result.Success(order)
         }
     }
+    "should handle invalid orders" {
+        checkAll(Arb.int(), Arb.string(), Arb.int()) { id, item, quantity ->
+            // Simulate invalid data
+            val invalidOrder = when {
+                item.isBlank() -> Order(id, item, quantity, Placed).copy(itemName = item) // Empty item name
+                quantity <= 0 -> Order(id, item, quantity, Placed).copy(quantity = quantity) // Non-positive quantity
+                else -> Order(id, item, quantity, Placed)
+            }
+
+            // Mock getOrders to return the invalid order
+            every { localRepository.placeOrder(invalidOrder) } returns Result.Failure(Throwable("Invalid order data."))
+
+            val result = useCase.placeOrder(invalidOrder)
+
+            if (result is Result.Failure) {
+                result.error.message shouldBe "Failed to place order"
+            } else {
+                throw AssertionError("Expected Result.Failure but got $result")
+            }
+        }
+    }
 
     "should transition order from Placed to Prepared" {
         // Given
